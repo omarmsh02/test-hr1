@@ -1,0 +1,621 @@
+/*=== MEDIA QUERY ===*/
+/*
+Theme Name: Medic
+Author: Themefisher
+Author URI: https://themefisher.com/
+Description: Medicle Template
+Version: 1.0.0
+
+*/
+@import url("https://fonts.googleapis.com/css?family=Exo:500,600,700|Roboto&display=swap");
+
+:root {
+  /*Primary color palette*/
+  --primary: #2c5aa0;
+  --primary-light: #4a90e2;
+  --primary-dark: #1a365d;
+  --primary-darker: #0d1b2a;
+  
+  /* Secondary colors */
+  --secondary: #2c3e50;
+  --text-muted: #5a6d80;
+  --light-bg: #f5f7fa;
+  --white: #fff;
+  --border-light: #eee;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  line-height: 1.6;
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  font-family: "Exo", sans-serif;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+h1, .h1 {
+  font-size: 1.8rem;
+}
+
+h2, .h2 {
+  font-size: 1.5rem;
+}
+
+h3, .h3 {
+  font-size: 1.3rem;
+}
+
+h4, .h4 {
+  font-size: 1.15rem;
+  line-height: 30px;
+}
+
+h5, .h5 {
+  font-size: 1.05rem;
+}
+
+h6, .h6 {
+  font-size: 0.95rem;
+}
+
+p {
+  line-height: 30px;
+}
+
+.navbar-toggle .icon-bar {
+  background: var(--primary);
+}
+
+input[type="email"], input[type="password"], input[type="text"], input[type="tel"] {
+  box-shadow: none;
+  height: 45px;
+  outline: none;
+  font-size: 14px;
+}
+
+input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus, input[type="tel"]:focus {
+  box-shadow: none;
+  border: 1px solid var(--primary);
+}
+
+.form-control {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border: 1px solid var(--primary);
+}
+
+.py-7 {
+  padding: 7rem 0px;
+}
+
+.btn {
+  display: inline-block;
+  font-size: 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: .5rem 1rem;
+  font-family: "Exo", sans-serif;
+  text-transform: uppercase;
+  border-radius: 50px;
+  border: 2px solid transparent;
+  transition: all .35s ease;
+}
+
+.btn.btn-icon i {
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+  padding-left: 15px;
+}
+
+.btn:focus {
+  outline: 0px;
+  box-shadow: none;
+}
+
+.btn-main {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.btn-main:hover {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+  color: var(--white);
+}
+
+.btn-main-2 {
+  background: var(--primary-light);
+  color: var(--white);
+  border-color: var(--primary-light);
+}
+
+.btn-main-2:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.btn-solid-border {
+  border: 2px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+}
+
+.btn-solid-border:hover {
+  border: 2px solid var(--primary);
+  color: var(--white);
+  background: var(--primary);
+}
+
+.btn-solid-border:hover.btn-icon i {
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.btn-solid-border.btn-icon i {
+  border-left: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+.btn-transparent {
+  background: transparent;
+  color: var(--secondary);
+  border-color: var(--text-muted);
+}
+
+.btn-transparent:hover {
+  background: var(--text-muted);
+  color: var(--white);
+}
+
+.btn-white {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--secondary);
+}
+
+.btn-white:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.btn-solid-white {
+  border-color: var(--white);
+  color: var(--white);
+}
+
+.btn-solid-white:hover {
+  background: var(--white);
+  color: var(--secondary);
+}
+
+.btn-round {
+  border-radius: 4px;
+}
+
+.btn-round-full {
+  border-radius: 50px;
+}
+
+.btn.active:focus, .btn:active:focus, .btn:focus {
+  outline: 0;
+}
+
+.bg-gray {
+  background: var(--light-bg);
+}
+
+.bg-primary {
+  background: var(--primary);
+}
+
+.bg-primary-dark {
+  background: var(--primary-dark);
+}
+
+.bg-primary-darker {
+  background: var(--primary-darker);
+}
+
+.bg-dark {
+  background: var(--secondary);
+}
+
+.bg-gradient {
+  background-image: linear-gradient(145deg, rgba(44, 90, 160, 0.95) 0%, rgba(74, 144, 226, 0.95) 100%);
+  background-repeat: repeat-x;
+}
+
+.section {
+  padding: 100px 0;
+}
+
+.section-sm {
+  padding: 70px 0;
+}
+
+.section-bottom {
+  padding-bottom: 100px;
+}
+
+.subtitle {
+  color: var(--primary);
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.overlay:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+  background: var(--primary);
+}
+
+.overly-2 {
+  position: relative;
+}
+
+.overly-2:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.text-sm {
+  font-size: 14px;
+}
+
+.text-md {
+  font-size: 2.25rem;
+}
+
+.text-lg {
+  font-size: 3.75rem;
+}
+
+.no-spacing {
+  letter-spacing: 0px;
+}
+
+/* Links */
+a {
+  color: var(--secondary);
+  text-decoration: none;
+  transition: all .35s ease;
+}
+
+a:focus, a:hover {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+a:focus {
+  outline: none;
+}
+
+.content-title {
+  font-size: 40px;
+  line-height: 50px;
+}
+
+.page-title {
+  padding: 120px 0px 70px 0px;
+  position: relative;
+}
+
+.page-title .block h1 {
+  color: var(--white);
+}
+
+.page-title .block p {
+  color: var(--white);
+}
+
+.page-title .breadcumb-nav {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.slick-slide:focus, .slick-slide a {
+  outline: none;
+}
+
+@media (max-width: 480px) {
+  h2, .h2 {
+    font-size: 1.3rem;
+    line-height: 36px;
+  }
+}
+
+.title-color {
+  color: var(--primary);
+}
+
+.secondary-bg {
+  background: var(--primary);
+}
+
+.section-title {
+  margin-bottom: 70px;
+}
+
+.section-title h2 {
+  color: var(--primary);
+}
+
+.text-lg {
+  font-size: 50px;
+}
+
+.gray-bg {
+  background: var(--light-bg);
+}
+
+@media (max-width: 480px) {
+  .text-lg {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 400px) {
+  .text-lg {
+    font-size: 28px;
+  }
+}
+
+#navbarmain {
+  padding: 20px 0px;
+}
+
+#navbarmain .nav-link {
+  font-weight: 600;
+  padding: 10px 15px;
+  color: var(--secondary);
+  font-family: "Exo", sans-serif;
+  text-transform: capitalize;
+  font-size: 16px;
+  transition: all .25s ease;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.navbar-brand {
+  margin-top: 10px;
+}
+
+.dropdown .dropdown-menu {
+  position: absolute;
+  display: block;
+  background: var(--white);
+  min-width: 240px;
+  top: 130%;
+  left: 0;
+  right: 0px;
+  opacity: 0;
+  padding: 0px;
+  visibility: hidden;
+  transition: all 0.3s ease-out 0s;
+  border: 0px;
+  border-top: 5px solid var(--primary-light);
+  border-radius: 0px;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  top: 115%;
+}
+
+.dropdown .dropdown-item {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: transparent;
+  font-weight: 400;
+  color: #555;
+}
+
+.dropdown .dropdown-item:hover {
+  color: var(--primary-light);
+}
+
+.header-top-bar {
+  background: var(--primary);
+  font-size: 14px;
+  padding: 10px 0px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--white);
+}
+
+.top-bar-info li a {
+  color: var(--white);
+  margin-right: 20px;
+}
+
+.top-right-bar a span {
+  color: var(--white);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.top-right-bar a i {
+  color: var(--white);
+  margin-right: 10px;
+}
+
+.bg-1 {
+  background: url("../images/bg/22.jpg") no-repeat 50% 50%;
+  background-size: cover;
+  position: relative;
+}
+
+.banner {
+  position: relative;
+  overflow: hidden;
+  background: var(--white);
+  background: url("../images/bg/slider-bg-1.jpg") no-repeat;
+  background-size: cover;
+  min-height: 550px;
+  font-weight: bolder;
+  color: var(--text-color, black);
+}
+
+.banner .block {
+  padding: 80px 0px 160px;
+}
+
+.banner .block h1 {
+  font-size: 60px;
+  line-height: 1.2;
+  letter-spacing: -1.2px;
+  text-transform: capitalize;
+  color: var(--primary);
+}
+
+.banner .block span {
+  color: var(--secondary);
+}
+
+.banner .block p {
+  color: var(--secondary);
+}
+
+.letter-spacing {
+  letter-spacing: 2px;
+}
+
+.text-color {
+  color: var(--primary);
+}
+
+.text-color-2 {
+  color: var(--primary-light);
+}
+
+.divider {
+  width: 40px;
+  height: 5px;
+  background: var(--primary-light);
+}
+
+@media (max-width: 480px) {
+  .banner .block h1 {
+    font-size: 38px;
+    line-height: 50px;
+  }
+  .banner {
+    min-height: 450px;
+    /* background: var(--white) !important; */
+  }
+}
+
+@media (max-width: 400px) {
+  .banner .block h1 {
+    font-size: 28px;
+    line-height: 40px;
+  }
+  .banner {
+    min-height: 450px;
+    /* background: var(--white) !important; */
+  }
+}
+
+@media (max-width: 768px) {
+  .banner .block h1 {
+    font-size: 56px;
+    line-height: 70px;
+  }
+}
+
+/* Add styling for the sidebar that matches the main theme */
+.sidebar {
+  background-color: var(--white);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-logo .logo-header {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border-light);
+  padding: 10px 15px;
+}
+
+.sidebar .nav-item .nav-link {
+  color: var(--secondary);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-item .nav-link:hover,
+.sidebar .nav-item .nav-link.active {
+  background-color: var(--light-bg);
+  color: var(--primary);
+}
+
+.sidebar .nav-item .nav-link i {
+  color: var(--primary);
+  margin-right: 10px;
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--border-light);
+  padding: 15px 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.sidebar-footer .logout-btn {
+  color: var(--secondary);
+  padding: 10px 20px;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.sidebar-footer .logout-btn:hover {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.sidebar-footer .logout-btn i {
+  margin-right: 10px;
+}
+
+/* Toggle sidebar button */
+.nav-toggle .btn-toggle {
+  background: transparent;
+  border: none;
+  color: var(--secondary);
+}
+
+.nav-toggle .btn-toggle:hover {
+  color: var(--primary);
+}
