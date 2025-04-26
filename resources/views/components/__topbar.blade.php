@@ -13,17 +13,18 @@
                     <i class="fas fa-sign-out-alt me-2"></i>Check Out
                 </button>
             </div>
-            <div class="ms-3 border-start ps-3 d-flex align-items-center">
-                <i class="fas fa-clock me-2 text-primary"></i>
-                <span id="liveClock" class="fw-bold fs-6 text-dark"></span>
-            </div>
-        </div>
-
-        <!-- Status Message Section -->
+            
+            <!-- Status Message Section -->
         <div class="d-flex align-items-center">
             <div class="alert alert-light py-1 px-3 mb-0 border d-flex align-items-center" id="statusAlert">
                 <i class="fas fa-info-circle me-2"></i>
                 <span id="statusMessage" class="small fw-bold">Status: Ready</span>
+            </div>
+        </div>
+            
+            <div class="ms-3 border-start ps-3 d-flex align-items-center">
+                <i class="fas fa-clock me-2 text-primary"></i>
+                <span id="liveClock" class="fw-bold fs-6 text-dark"></span>
             </div>
         </div>
 
@@ -52,18 +53,10 @@
             second: '2-digit',
             hour12: true
         };
-        const dateOptions = {
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric'
-        };
-        
         const timeString = now.toLocaleTimeString('en-US', options);
-        const dateString = now.toLocaleDateString('en-US', dateOptions);
-        
+
         document.getElementById('liveClock').innerHTML = `
             <span class="time">${timeString}</span>
-            <span class="date text-muted small">${dateString}</span>
         `;
         
         setTimeout(updateClock, 1000);

@@ -17,7 +17,9 @@ class DepartmentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->unique()->company,
+            'description' => $this->faker->sentence,
+            'manager_id' => null,        
         ];
     }
 }

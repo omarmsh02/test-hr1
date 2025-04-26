@@ -14,8 +14,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('department')->get();
-        return view('admin.users.index', compact('users'));
+        $users = User::query()
+        ->when(request('department'), function ($query) {
+            $query->where('department_id', request('department'));
+        })
+        ->when(request('role'), function ($query) {
+            $query->where('role', request('role'));
+        })
+        ->with('department')
+        ->paginate(10);
+
+        $departments = Department::all();
+
+        return view('admin.users.index', compact('users', 'departments'));
     }
 
     /**
@@ -44,7 +55,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'department' => $validated['department'],
+            'department_id' => $validated['department'],
             'role' => $validated['role'],
         ]);
 
@@ -84,7 +95,7 @@ class UserController extends Controller
         $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'department' => $validated['department'],
+            'department_id' => $validated['department'],
             'role' => $validated['role'],
         ];
 

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 // Home Route
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Authentication Routes
@@ -57,10 +57,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:employee')
         ->name('employee.dashboard');
 });
-
-// Admin Routes
-Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    // Admin Routes
+    Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     // Users
+    
+    
     Route::resource('users', UserController::class)->names([
         'index'   => 'admin.users.index',
         'create'  => 'admin.users.create',
@@ -94,27 +95,42 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     ]);
 
     // Leaves
-        Route::get('/leaves', [LeaveController::class, 'adminIndex'])->name('admin.leaves.index');
-        Route::put('/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])->name('admin.leaves.update-status');
-        Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('admin.leaves.show'); // Add this line
+    Route::resource('leaves', LeaveController::class)->names([
+        'index'   => 'admin.leaves.index',
+        'create'  => 'admin.leaves.create',
+        'store'   => 'admin.leaves.store',
+        'show'    => 'admin.leaves.show',
+        'edit'    => 'admin.leaves.edit',
+        'update'  => 'admin.leaves.update',
+        'destroy' => 'admin.leaves.destroy',
+    ]);
+    Route::put('/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])->name('admin.leaves.update-status');
 
     // Policies
-    Route::resource('policies', PolicyController::class)->names([
-        'index'   => 'admin.policies.index',
-        'create'  => 'admin.policies.create',
-        'store'   => 'admin.policies.store',
-        'show'    => 'admin.policies.show',
-        'edit'    => 'admin.policies.edit',
-        'update'  => 'admin.policies.update',
-        'destroy' => 'admin.policies.destroy',
-    ]);
+    // Index: Display a listing of policies
+    Route::get('/policies', [PolicyController::class, 'index'])->name('admin.policies.index');
+    Route::get('/policies/create', [PolicyController::class, 'create'])->name('admin.policies.create');
+    Route::post('/policies', [PolicyController::class, 'store'])->name('admin.policies.store');
+    Route::get('/policies/{policy}', [PolicyController::class, 'show'])->name('admin.policies.show');
+    Route::get('/policies/{policy}/edit', [PolicyController::class, 'edit'])->name('admin.policies.edit');
+    Route::put('/policies/{policy}', [PolicyController::class, 'update'])->name('admin.policies.update');
+    Route::delete('/policies/{policy}', [PolicyController::class, 'destroy'])->name('admin.policies.destroy');
 
     // Salaries
-    Route::get('/salaries', [SalaryController::class, 'index'])->name('admin.salaries.index');
+    Route::resource('salaries', SalaryController::class)->names([
+        'index'   => 'admin.salaries.index',
+        'create'  => 'admin.salaries.create',
+        'store'   => 'admin.salaries.store',
+        'show'    => 'admin.salaries.show',
+        'edit'    => 'admin.salaries.edit',
+        'update'  => 'admin.salaries.update',
+        'destroy' => 'admin.salaries.destroy',
+    ]);
     Route::post('/salaries/generate-payslips', [SalaryController::class, 'generatePayslips'])->name('admin.salaries.generate-payslips');
 
     // Requests
     Route::get('/requests', [RequestController::class, 'adminIndex'])->name('admin.requests.index');
+    Route::get('/requests/{request}', [RequestController::class, 'show'])->name('admin.requests.show');
     Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('admin.requests.update-status');
 });
 
@@ -131,6 +147,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/requests', [RequestController::class, 'managerIndex'])->name('manager.requests.index');
     Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('manager.requests.update-status');
 });
+
 
 // Employee Routes
 Route::prefix('employee')->middleware(['auth', 'role:employee'])->group(function () {

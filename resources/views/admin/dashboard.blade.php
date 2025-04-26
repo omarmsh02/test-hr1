@@ -104,11 +104,6 @@
                         <tr>
                             <td class="py-3 px-4 align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-sm me-3">
-                                        <span class="avatar-text bg-primary rounded-circle">
-                                            {{ substr($leave->user->name, 0, 1) }}
-                                        </span>
-                                    </div>
                                     <div>
                                         <h6 class="mb-0">{{ $leave->user->name }}</h6>
                                         <small class="text-muted">{{ $leave->user->department->name ?? 'N/A' }}</small>
@@ -160,6 +155,50 @@
                 </div>
             </div>
         </div>
+        
+        <!--Holidays -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-0 py-3">
+                    <h5 class="mb-0 fw-bold">Upcoming Holidays</h5>
+                </div>
+                <div class="card-body p-0">
+                    @php
+                        // Use the $Holidays variable if it exists from controller
+                        // Otherwise, fall back to querying directly (but properly namespaced)
+                        $displayHolidays = $Holidays ?? \App\Models\Holiday::where('date', '>=', now())
+                            ->orderBy('date')
+                            ->take(5)
+                            ->get();
+                    @endphp
+                    
+                    @if($displayHolidays->count() > 0)
+                        <div class="list-group list-group-flush">
+                            @foreach($displayHolidays as $holiday)
+                            <div class="list-group-item border-0 py-3 px-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ $holiday->name }}</h6>
+                                        <small class="text-muted">
+                                            {{ $holiday->date->format('l, F j, Y') }}
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-info bg-opacity-10 text-info">
+                                        {{ $holiday->date->diffForHumans() }}
+                                    </span>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center p-4 text-muted">
+                            <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                            <p>No upcoming holidays found</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -173,19 +212,6 @@
     .card:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
-    }
-    
-    .avatar {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-    }
-    
-    .avatar-text {
-        font-weight: 600;
-        color: white;
     }
     
     .table th {

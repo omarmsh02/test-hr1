@@ -2,22 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\Policy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Policy>
- */
 class PolicyFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = Policy::class;
+
+    public function definition()
     {
         return [
-            //
+            'title' => $this->faker->sentence,
+            'content' => $this->faker->paragraph,
+            'category' => $this->faker->randomElement(['hr', 'finance', 'operations']),
+            'is_active' => $this->faker->boolean,
         ];
     }
 }

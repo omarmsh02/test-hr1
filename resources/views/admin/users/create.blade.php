@@ -1,31 +1,110 @@
-@extends('layouts.app')
+@extends('layout.app')
 
 @section('content')
 <div class="container">
-    <h1>Create User</h1>
-    <form action="{{ route('users.store') }}" method="POST">
-        @csrf
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" name="name" id="name" class="form-control" required>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Create New User</div>
+
+                <div class="card-body">
+                    <form method="POST" action="{{ route('admin.users.store') }}">
+                        @csrf
+
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
+
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
+
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+
+                            <div class="col-md-6">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="department" class="col-md-4 col-form-label text-md-right">Department</label>
+
+                            <div class="col-md-6">
+                                <select id="department" class="form-control @error('department') is-invalid @enderror" name="department" required>
+                                    <option value="">Select Department</option>
+                                    @foreach($departments as $department)
+                                        <option value="{{ $department->id }}" {{ old('department') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('department')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label text-md-right">Role</label>
+
+                            <div class="col-md-6">
+                                <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
+                                    <option value="">Select Role</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
+                                    <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Employee</option>
+                                </select>
+
+                                @error('role')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-0">
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Create User
+                                </button>
+                                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+                                    Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" name="email" id="email" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" id="role" class="form-control" required>
-                <option value="admin">Admin</option>
-                <option value="manager">Manager</option>
-                <option value="employee">Employee</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Create</button>
-    </form>
+    </div>
 </div>
 @endsection

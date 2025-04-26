@@ -21,8 +21,8 @@ class LeaveController extends Controller
 
         // Calculate leave balance directly in the controller
         $leaveBalance = $this->calculateLeaveBalance($user->id);
-
-        return view('employee.leaves.index', compact('leaves', 'leaveBalance'));
+        
+        return view('admin.leaves.index', compact('leaves', 'leaveBalance'));
     }
 
     /**
@@ -41,7 +41,7 @@ class LeaveController extends Controller
         // Calculate leave balance directly in the controller
         $leaveBalance = $this->calculateLeaveBalance(auth()->id());
 
-        return view('employee.leaves.create', compact('leaveTypes', 'leaveBalance'));
+        return view('admin.leaves.create', compact('leaveTypes', 'leaveBalance'));
     }
 
     /**

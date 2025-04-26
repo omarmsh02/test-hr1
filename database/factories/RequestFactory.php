@@ -2,22 +2,21 @@
 
 namespace Database\Factories;
 
+use App\Models\Request;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Request>
- */
 class RequestFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = Request::class;
+
+    public function definition()
     {
         return [
-            //
+            'user_id' => User::factory(), // Automatically creates a related user if needed
+            'type' => $this->faker->randomElement(['leave', 'equipment', 'other']),
+            'description' => $this->faker->sentence,
+            'status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
         ];
     }
 }

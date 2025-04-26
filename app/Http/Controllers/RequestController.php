@@ -59,7 +59,6 @@ class RequestController extends Controller
         return redirect()->route('employee.requests.index')
             ->with('success', 'Request submitted successfully.');
     }
-
     /**
      * Display request details
      */
@@ -70,7 +69,7 @@ class RequestController extends Controller
             abort(403);
         }
         
-        return view('employee.requests.show', compact('request'));
+        return view('admin.requests.show', compact('request'));
     }
 
     /**
