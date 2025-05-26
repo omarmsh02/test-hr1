@@ -28,6 +28,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+// Common Attendance Routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/attendance/checkIn', [AttendanceController::class, 'checkIn'])->name('attendance.checkIn');
+    Route::post('/attendance/break', [AttendanceController::class, 'recordBreak'])->name('attendance.break');
+    Route::post('/attendance/checkOut', [AttendanceController::class, 'checkOut'])->name('attendance.checkOut');
+});
+
 // Role-Based Dashboards
 Route::middleware(['auth'])->group(function () {
     // Redirect to the appropriate dashboard based on user role
@@ -57,42 +64,36 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:employee')
         ->name('employee.dashboard');
 });
-    // Admin Routes
-    Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+
+// Admin Routes
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     // Users
-    
-    
-    Route::resource('users', UserController::class)->names([
-        'index'   => 'admin.users.index',
-        'create'  => 'admin.users.create',
-        'store'   => 'admin.users.store',
-        'show'    => 'admin.users.show',
-        'edit'    => 'admin.users.edit',
-        'update'  => 'admin.users.update',
-        'destroy' => 'admin.users.destroy',
-    ]);
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     // Departments
-    Route::resource('departments', DepartmentController::class)->names([
-        'index'   => 'admin.departments.index',
-        'create'  => 'admin.departments.create',
-        'store'   => 'admin.departments.store',
-        'show'    => 'admin.departments.show',
-        'edit'    => 'admin.departments.edit',
-        'update'  => 'admin.departments.update',
-        'destroy' => 'admin.departments.destroy',
-    ]);
+    Route::get('/departments', [DepartmentController::class, 'index'])->name('admin.departments.index');
+    Route::get('/departments/create', [DepartmentController::class, 'create'])->name('admin.departments.create');
+    Route::post('/departments', [DepartmentController::class, 'store'])->name('admin.departments.store');
+    Route::get('/departments/{department}', [DepartmentController::class, 'show'])->name('admin.departments.show');
+    Route::get('/departments/{department}/edit', [DepartmentController::class, 'edit'])->name('admin.departments.edit');
+    Route::put('/departments/{department}', [DepartmentController::class, 'update'])->name('admin.departments.update');
+    Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])->name('admin.departments.destroy');
+
 
     // Holidays
-    Route::resource('holidays', HolidayController::class)->names([
-        'index'   => 'admin.holidays.index',
-        'create'  => 'admin.holidays.create',
-        'store'   => 'admin.holidays.store',
-        'show'    => 'admin.holidays.show',
-        'edit'    => 'admin.holidays.edit',
-        'update'  => 'admin.holidays.update',
-        'destroy' => 'admin.holidays.destroy',
-    ]);
+    Route::get('/holidays', [HolidayController::class, 'index'])->name('admin.holidays.index');
+    Route::get('/holidays/create', [HolidayController::class, 'create'])->name('admin.holidays.create');
+    Route::post('/holidays', [HolidayController::class, 'store'])->name('admin.holidays.store');
+    Route::get('/holidays/{holiday}', [HolidayController::class, 'show'])->name('admin.holidays.show');
+    Route::get('/holidays/{holiday}/edit', [HolidayController::class, 'edit'])->name('admin.holidays.edit');
+    Route::put('/holidays/{holiday}', [HolidayController::class, 'update'])->name('admin.holidays.update');
+    Route::delete('/holidays/{holiday}', [HolidayController::class, 'destroy'])->name('admin.holidays.destroy');
 
     // Leaves
     Route::resource('leaves', LeaveController::class)->names([
@@ -107,7 +108,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])->name('admin.leaves.update-status');
 
     // Policies
-    // Index: Display a listing of policies
     Route::get('/policies', [PolicyController::class, 'index'])->name('admin.policies.index');
     Route::get('/policies/create', [PolicyController::class, 'create'])->name('admin.policies.create');
     Route::post('/policies', [PolicyController::class, 'store'])->name('admin.policies.store');
@@ -131,45 +131,67 @@ Route::middleware(['auth'])->group(function () {
     // Requests
     Route::get('/requests', [RequestController::class, 'adminIndex'])->name('admin.requests.index');
     Route::get('/requests/{request}', [RequestController::class, 'show'])->name('admin.requests.show');
-    Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('admin.requests.update-status');
+    Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('admin.requests.updateStatus');
 });
 
 // Manager Routes
 Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function () {
-    // Leaves
+    // Leaves - Fixed routes with consistent naming
     Route::get('/leaves', [LeaveController::class, 'managerIndex'])->name('manager.leaves.index');
+    Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('manager.leaves.show');
+    Route::post('/leaves', [LeaveController::class, 'store'])->name('manager.leaves.store');
+    // Fixed: Changed from 'updateStatus' to 'update-status' to match the form action
     Route::put('/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])->name('manager.leaves.update-status');
 
     // Attendance
     Route::get('/attendance', [AttendanceController::class, 'managerIndex'])->name('manager.attendance.index');
-
+    Route::get('/attendance/{user}', [AttendanceController::class, 'show'])->name('manager.attendance.show');
+    Route::post('/attendance', [AttendanceController::class, 'store'])->name('manager.attendance.store');
+    Route::put('/attendance/{attendance}', [AttendanceController::class, 'update'])->name('manager.attendance.update');
+    Route::delete('/attendance/{attendance}', [AttendanceController::class, 'destroy'])->name('manager.attendance.destroy');
     // Requests
     Route::get('/requests', [RequestController::class, 'managerIndex'])->name('manager.requests.index');
-    Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('manager.requests.update-status');
+    Route::get('/requests/{request}', [RequestController::class, 'show'])->name('manager.requests.show');
+    Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('manager.requests.updateStatus');
 });
-
 
 // Employee Routes
 Route::prefix('employee')->middleware(['auth', 'role:employee'])->group(function () {
     // Attendance
     Route::get('/attendance', [AttendanceController::class, 'employeeIndex'])->name('employee.attendance.index');
-    Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.clockin');
-    Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.clockout');
+
+    Route::resource('/holiday', HolidayController::class)->names([
+        'index'   => 'employee.holidays.calender',
+        'create'  => 'employee.holidays.create',
+        'store'   => 'employee.holidays.store',
+        'show'    => 'employee.holidays.show',
+        'edit'    => 'employee.holidays.edit',
+        'update'  => 'employee.holidays.update',
+        'destroy' => 'employee.holidays.destroy',
+    ]);
 
     // Leaves
     Route::get('/leaves', [LeaveController::class, 'index'])->name('employee.leaves.index');
-    Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leave.create');
-    Route::post('/leaves', [LeaveController::class, 'store'])->name('leave.store');
+    Route::get('/leaves/create', [LeaveController::class, 'create'])->name('employee.leaves.create');
+    Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('employee.leaves.show');
+    Route::post('/leaves', [LeaveController::class, 'store'])->name('employee.leaves.store');
 
     // Salary
     Route::get('/salary', [SalaryController::class, 'employeeIndex'])->name('employee.salary.index');
 
     // Requests
-    Route::get('/requests', [RequestController::class, 'employeeIndex'])->name('employee.requests.index');
-    Route::post('/requests', [RequestController::class, 'store'])->name('employee.requests.store');
+    Route::resource('requests', RequestController::class)->names([
+        'index'   => 'employee.requests.index',
+        'create'  => 'employee.requests.create',
+        'store'   => 'employee.requests.store',
+        'show'    => 'employee.requests.show',
+        'edit'    => 'employee.requests.edit',
+        'update'  => 'employee.requests.update',
+        'destroy' => 'employee.requests.destroy',
+    ]);
 
     // Policies
-    Route::get('/policies', [PolicyController::class, 'employeeIndex'])->name('policies.employeeIndex');
+    Route::get('/policies', [PolicyController::class, 'employeeIndex'])->name('employee.policies.index');
 });
 
 // Chat Routes
@@ -177,11 +199,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');
     Route::get('/chats/{user}', [ChatController::class, 'show'])->name('chats.show');
     Route::post('/chats/{user}', [ChatController::class, 'store'])->name('chats.store');
-});
-
-// Profile Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

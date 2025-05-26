@@ -16,7 +16,7 @@ class RequestController extends Controller
         $user = auth()->user();
         $requests = EmployeeRequest::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(5);
             
         return view('employee.requests.index', compact('requests'));
     }
@@ -59,17 +59,27 @@ class RequestController extends Controller
         return redirect()->route('employee.requests.index')
             ->with('success', 'Request submitted successfully.');
     }
+
     /**
      * Display request details
      */
     public function show(EmployeeRequest $request)
     {
         // Ensure users can only view their own requests unless admin/manager
-        if ($request->users_id !== auth()->id() && auth()->user()->role === 'employee') {
+        if ($request->user_id !== auth()->id() && auth()->user()->role === 'employee') {
             abort(403);
         }
         
-        return view('admin.requests.show', compact('request'));
+        // Return the correct view based on user role
+        $userRole = auth()->user()->role;
+        
+        if ($userRole === 'admin') {
+            return view('admin.requests.show', compact('request'));
+        } elseif ($userRole === 'manager') {
+            return view('manager.requests.show', compact('request'));
+        } else {
+            return view('employee.requests.show', compact('request'));
+        }
     }
 
     /**
@@ -90,7 +100,10 @@ class RequestController extends Controller
             $query->where('type', $type);
         }
         
-        $requests = $query->latest()->get();
+        $requests = $query->latest()->paginate(5);
+        
+        // Append query parameters to pagination links
+        $requests->appends($httpRequest->query());
         
         $requestTypes = [
             'equipment' => 'Equipment Request',
@@ -113,7 +126,7 @@ class RequestController extends Controller
         $type = $httpRequest->type ?? 'all';
         
         // Get employees from the manager's department
-        $departmentEmployees = User::where('department', $user->department)
+        $departmentEmployees = User::where('department_id', $user->department_id)
             ->where('role', 'employee')
             ->pluck('id');
             
@@ -128,7 +141,10 @@ class RequestController extends Controller
             $query->where('type', $type);
         }
         
-        $requests = $query->latest()->get();
+        $requests = $query->latest()->paginate(5);
+        
+        // Append query parameters to pagination links
+        $requests->appends($httpRequest->query());
         
         $requestTypes = [
             'equipment' => 'Equipment Request',
@@ -151,9 +167,25 @@ class RequestController extends Controller
             'comment' => 'nullable|string|max:500',
         ]);
         
+        // Add validation to ensure the request belongs to manager's department
+        $user = auth()->user();
+        
+        if ($user->role === 'manager') {
+            // Check if the request belongs to an employee in manager's department
+            $departmentEmployees = User::where('department_id', $user->department_id)
+                ->where('role', 'employee')
+                ->pluck('id');
+                
+            if (!$departmentEmployees->contains($request->user_id)) {
+                abort(403, 'You can only manage requests from your department.');
+            }
+        }
+        
         $request->update([
             'status' => $validated['status'],
             'comment' => $validated['comment'] ?? null,
+            'processed_at' => now(),
+            'processed_by' => auth()->id(),
         ]);
         
         // Notification logic can be added here

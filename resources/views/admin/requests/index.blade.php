@@ -27,12 +27,20 @@
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ route('admin.requests.index') }}" class="btn btn-secondary ms-2">Clear</a>
                 </div>
             </form>
         </div>
     </div>
-    
+
     <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Requests List</h5>
+            <small class="text-muted">
+                Showing {{ $requests->firstItem() ?? 0 }} to {{ $requests->lastItem() ?? 0 }} 
+                of {{ $requests->total() }} results
+            </small>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -50,7 +58,11 @@
                         @forelse($requests as $request)
                             <tr>
                                 <td>{{ $request->user->name }}</td>
-                                <td>{{ $request->type }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {{ $requestTypes[$request->type] ?? ucfirst($request->type) }}
+                                    </span>
+                                </td>
                                 <td>{{ Str::limit($request->description, 50) }}</td>
                                 <td>
                                     <span class="badge bg-{{ 
@@ -60,20 +72,90 @@
                                         {{ ucfirst($request->status) }}
                                     </span>
                                 </td>
-                                <td>{{ $request->created_at->format('M d, Y H:i') }}</td>
+                                <td>{{ $request->created_at->format('M d, Y') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.requests.show', $request) }}" class="btn btn-sm btn-primary">View</a>
+                                    <a href="{{ route('admin.requests.show', $request) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">No requests found</td>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No requests found</h5>
+                                        <p class="text-muted mb-0">Try adjusting your filters or check back later.</p>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
+        
+        @if($requests->hasPages())
+        <div class="card-footer">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        Showing {{ $requests->firstItem() }} to {{ $requests->lastItem() }} 
+                        of {{ $requests->total() }} entries
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-end">
+                        {{ $requests->links('pagination::bootstrap-4') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
+
+<style>
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.page-link:hover {
+    color: #495057;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+</style>
 @endsection

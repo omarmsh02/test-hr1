@@ -12,8 +12,22 @@ class HolidayController extends Controller
      */
     public function index()
     {
-        $holidays = Holiday::orderBy('date')->get();
-        return view('admin.holidays.index', compact('holidays'));
+        $user = auth()->user();
+        $year = request()->input('year', date('Y')); // Get year from request or default to current year
+        
+        // For paginated list view (admin and employee list)
+        $holidays = Holiday::orderBy('date')->paginate(5);
+        
+        // For calendar view (needs all holidays for the year)
+        $allHolidays = Holiday::whereYear('date', $year)
+            ->orderBy('date')
+            ->get();
+
+        if ($user->role === 'admin') {
+            return view('admin.holidays.index', compact('holidays', 'allHolidays', 'year'));
+        } else {
+            return view('employee.holidays.calender', compact('holidays', 'allHolidays', 'year'));
+        }
     }
 
     /**

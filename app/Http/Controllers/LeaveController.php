@@ -21,8 +21,11 @@ class LeaveController extends Controller
 
         // Calculate leave balance directly in the controller
         $leaveBalance = $this->calculateLeaveBalance($user->id);
-        
-        return view('admin.leaves.index', compact('leaves', 'leaveBalance'));
+        if ($user->role === 'admin') {
+            return view('admin.leaves.index', compact('leaves', 'leaveBalance'));
+        } else {
+            return view('employee.leaves.index', compact('leaves', 'leaveBalance'));
+        }
     }
 
     /**
@@ -40,8 +43,8 @@ class LeaveController extends Controller
 
         // Calculate leave balance directly in the controller
         $leaveBalance = $this->calculateLeaveBalance(auth()->id());
-
-        return view('admin.leaves.create', compact('leaveTypes', 'leaveBalance'));
+        
+        return view('employee.leaves.create', compact('leaveTypes', 'leaveBalance'));
     }
 
     /**
@@ -88,11 +91,27 @@ class LeaveController extends Controller
      */
     public function show(Leave $leave)
     {
-        // Ensure user can only view their own leaves
-        if ($leave->user_id !== auth()->id() && auth()->user()->role === 'employee') {
-            abort(403);
+        $user = auth()->user();
+        
+        // Check permissions based on user role
+        if ($user->role === 'employee' && $leave->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to this leave request.');
         }
-
+        
+        if ($user->role === 'manager') {
+            // Manager can only view leaves from their department
+            $departmentEmployees = User::where('department_id', $user->department_id)
+                ->where('role', 'employee')
+                ->pluck('id');
+                
+            if (!$departmentEmployees->contains($leave->user_id)) {
+                abort(403, 'Unauthorized access to this leave request.');
+            }
+            
+            return view('manager.leaves.show', compact('leave'));
+        }
+        
+        // Admin can view all leaves, employees can view their own
         return view('employee.leaves.show', compact('leave'));
     }
 
@@ -120,9 +139,10 @@ class LeaveController extends Controller
     {
         $user = auth()->user();
         $status = $request->status ?? 'all';
+        $type = $request->type ?? 'all';
 
         // Get employees from the manager's department
-        $departmentEmployees = User::where('department', $user->department)
+        $departmentEmployees = User::where('department_id', $user->department_id)
             ->where('role', 'employee')
             ->pluck('id');
 
@@ -133,28 +153,113 @@ class LeaveController extends Controller
             $query->where('status', $status);
         }
 
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        // Add date range filter if provided
+        if ($request->daterange) {
+            $dates = explode(' - ', $request->daterange);
+            if (count($dates) === 2) {
+                $query->whereBetween('start_date', [
+                    Carbon::parse($dates[0])->startOfDay(),
+                    Carbon::parse($dates[1])->endOfDay()
+                ]);
+            }
+        }
+
         $leaves = $query->latest()->get();
 
         return view('manager.leaves.index', compact('leaves', 'status'));
     }
 
     /**
-     * Update leave status (admin/manager)
+     * Update leave status (admin/manager) - FIXED VERSION
      */
     public function updateStatus(Request $request, Leave $leave)
     {
+        // Add debugging
+        \Log::info('UpdateStatus called', [
+            'leave_id' => $leave->id,
+            'current_status' => $leave->status,
+            'request_data' => $request->all(),
+            'user_role' => auth()->user()->role
+        ]);
+
+        $user = auth()->user();
+        
+        // Validate the request
         $validated = $request->validate([
             'status' => 'required|in:approved,rejected',
             'comment' => 'nullable|string|max:500',
         ]);
 
-        $leave->update([
-            'status' => $validated['status'],
-            'comment' => $validated['comment'] ?? null,
-        ]);
+        // Check permissions
+        if ($user->role === 'manager') {
+            // Manager can only update leaves from their department
+            $departmentEmployees = User::where('department_id', $user->department_id)
+                ->where('role', 'employee')
+                ->pluck('id');
+                
+            if (!$departmentEmployees->contains($leave->user_id)) {
+                \Log::warning('Manager unauthorized access', [
+                    'manager_id' => $user->id,
+                    'manager_dept' => $user->department_id,
+                    'leave_user_id' => $leave->user_id,
+                    'dept_employees' => $departmentEmployees->toArray()
+                ]);
+                
+                return redirect()->back()
+                    ->with('error', 'You are not authorized to update this leave request.');
+            }
+        } elseif ($user->role !== 'admin') {
+            // Only admin and manager can update leave status
+            return redirect()->back()
+                ->with('error', 'You are not authorized to update leave status.');
+        }
 
-        return redirect()->back()
-            ->with('success', 'Leave request ' . $validated['status'] . ' successfully.');
+        // Only update if the leave is still pending
+        if ($leave->status !== 'pending') {
+            \Log::warning('Leave already processed', [
+                'leave_id' => $leave->id,
+                'current_status' => $leave->status
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'This leave request has already been processed.');
+        }
+
+        // Update the leave
+        try {
+            $updateData = [
+                'status' => $validated['status'],
+                'comment' => $validated['comment'] ?? null,
+                'processed_by' => $user->id,
+                'processed_at' => now(),
+            ];
+            
+            \Log::info('Updating leave with data', $updateData);
+            
+            $leave->update($updateData);
+            
+            \Log::info('Leave updated successfully', [
+                'leave_id' => $leave->id,
+                'new_status' => $leave->fresh()->status
+            ]);
+
+            $message = 'Leave request ' . $validated['status'] . ' successfully.';
+            
+            return redirect()->back()->with('success', $message);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error updating leave', [
+                'leave_id' => $leave->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()->with('error', 'An error occurred while updating the leave request.');
+        }
     }
 
     /**

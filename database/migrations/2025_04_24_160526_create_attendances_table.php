@@ -12,7 +12,7 @@ class CreateAttendancesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users'); // Links to the employee
             $table->date('attendance_date'); // Date of attendance
-            $table->time('check_in')->nullable(); // Check-in time
+            $table->time('check_in')->nullable();// Break time
             $table->time('check_out')->nullable(); // Check-out time
             $table->string('status')->default('present'); // Status: present, absent, late, etc.
             $table->text('notes')->nullable(); // Additional notes

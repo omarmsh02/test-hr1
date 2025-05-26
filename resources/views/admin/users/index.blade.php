@@ -8,29 +8,34 @@
                 <div class="card-header bg-white border-bottom-0 py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 text-dark font-weight-medium">
-                            <i class="fas fa-users mr-2 text-primary"></i>User Management
+                            <i class="fas fa-users me-2 text-primary"></i>User Management
                         </h5>
                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm rounded-pill px-3">
-                            <i class="fas fa-plus mr-1"></i> New User
+                            <i class="fas fa-plus me-1"></i> New User
                         </a>
                     </div>
                 </div>
-
                 <div class="card-body p-4">
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show rounded-lg mb-4 border-0 shadow-sm">
-                            <i class="fas fa-check-circle mr-2"></i>
+                        <div class="alert alert-success alert-dismissible fade show rounded-lg mb-4 border-0 shadow-sm" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
                             {{ session('success') }}
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
 
-                    <!-- Simplified Filter Bar -->
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show rounded-lg mb-4 border-0 shadow-sm" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    <!-- Filter Bar -->
                     <div class="bg-white p-3 rounded-lg shadow-sm mb-4">
                         <form method="GET" action="{{ route('admin.users.index') }}" class="form-inline">
-                            <div class="form-group mr-3">
+                            <div class="form-group me-3">
                                 <select name="department" id="department" class="form-control select2" style="min-width: 200px;">
                                     <option value="">All Departments</option>
                                     @foreach($departments as $department)
@@ -40,7 +45,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group mr-3">
+                            <div class="form-group me-3">
                                 <select name="role" id="role" class="form-control select2" style="min-width: 150px;">
                                     <option value="">All Roles</option>
                                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
@@ -48,12 +53,12 @@
                                     <option value="employee" {{ request('role') == 'employee' ? 'selected' : '' }}>Employee</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary mr-2">
-                                <i class="fas fa-filter mr-1"></i> Filter
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-filter me-1"></i> Filter
                             </button>
                             @if(request()->has('department') || request()->has('role'))
                                 <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-sync-alt mr-1"></i> Reset
+                                    <i class="fas fa-sync-alt me-1"></i> Reset
                                 </a>
                             @endif
                         </form>
@@ -64,84 +69,70 @@
                         <table class="table table-hover">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="border-0 text-muted small font-weight-bold">ID</th>
-                                    <th class="border-0 text-muted small font-weight-bold">Name</th>
-                                    <th class="border-0 text-muted small font-weight-bold">Email</th>
-                                    <th class="border-0 text-muted small font-weight-bold">Department</th>
-                                    <th class="border-0 text-muted small font-weight-bold">Role</th>
-                                    <th class="border-0 text-muted small font-weight-bold text-right">Actions</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Role</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($users as $user)
-                                <tr>
-                                    <td class="text-secondary align-middle">#{{ $user->id }}</td>
-                                    <td class="align-middle">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-circle-sm mr-3 bg-light-primary">
-                                                <span class="initials">{{ substr($user->name, 0, 1) }}</span>
+                                    <tr>
+                                        <td class="align-middle">#{{ $user->id }}</td>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle-sm me-3 bg-light-primary">
+                                                    <span class="initials">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                                                </div>
+                                                <span>{{ $user->name }}</span>
                                             </div>
-                                            <span class="font-weight-medium">{{ $user->name }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="text-secondary align-middle">{{ $user->email }}</td>
-                                    <td class="align-middle">
-                                        <span class="badge badge-light">{{ $user->department->name ?? 'N/A' }}</span>
-                                    </td>
-                                    <td class="align-middle">
-                                        @php
-                                            $roleClasses = [
-                                                'admin' => 'badge-danger',
-                                                'manager' => 'badge-warning',
-                                                'employee' => 'badge-success'
-                                            ];
-                                        @endphp
-                                        <span class="badge {{ $roleClasses[$user->role] ?? 'badge-secondary' }}">
-                                            {{ ucfirst($user->role) }}
-                                        </span>
-                                    </td>
-                                    <td class="text-right align-middle">
-                                        <div class="btn-group">
-                                            <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-sm btn-outline-primary rounded" title="View">
-                                                <i class="far fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-warning rounded mx-1" title="Edit">
-                                                <i class="far fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded" title="Delete" onclick="return confirm('Are you sure?')">
+                                        </td>
+                                        <td class="align-middle">{{ $user->email }}</td>
+                                        <td class="align-middle">{{ $user->department->name ?? 'N/A' }}</td>
+                                        <td class="align-middle">{{ ucfirst($user->role) }}</td>
+                                        <td class="text-end align-middle">
+                                            <div class="btn-group">
+                                                <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                    <i class="far fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-warning mx-1" title="Edit">
+                                                    <i class="far fa-edit"></i>
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-danger delete-user-btn"
+                                                        title="Delete"
+                                                        data-user-id="{{ $user->id }}"
+                                                        data-user-name="{{ $user->name }}"
+                                                        data-delete-url="{{ route('admin.users.destroy', $user->id) }}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="6" class="text-center py-4">
-                                        <i class="fas fa-user-slash fa-2x text-muted mb-3"></i>
-                                        <h5 class="text-muted">No users found</h5>
-                                        @if(request()->has('department') || request()->has('role'))
-                                            <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-link text-primary">
-                                                Clear filters
-                                            </a>
-                                        @endif
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <i class="fas fa-user-slash fa-2x text-muted mb-3"></i>
+                                            <h5 class="text-muted">No users found</h5>
+                                            @if(request()->has('department') || request()->has('role'))
+                                                <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-link text-primary">Clear filters</a>
+                                            @endif
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Standard Bootstrap Pagination -->
+                    <!-- Pagination -->
                     @if($users->hasPages())
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <div class="text-muted small">
-                                Showing <span class="font-weight-bold">{{ $users->firstItem() }}</span> to 
-                                <span class="font-weight-bold">{{ $users->lastItem() }}</span> of 
-                                <span class="font-weight-bold">{{ $users->total() }}</span> users
+                                Showing <strong>{{ $users->firstItem() }}</strong> to 
+                                <strong>{{ $users->lastItem() }}</strong> of 
+                                <strong>{{ $users->total() }}</strong> users
                             </div>
                             <div>
                                 {{ $users->appends(request()->query())->links() }}
@@ -154,17 +145,35 @@
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete user <strong id="userNameToDelete"></strong>?</p>
+                <p class="text-danger small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" action="" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-    /* Card Styling */
-    .card {
-        border: none;
-    }
-    
-    .rounded-lg {
-        border-radius: 10px;
-    }
-    
-    /* Avatar Circles */
     .avatar-circle-sm {
         width: 32px;
         height: 32px;
@@ -172,102 +181,60 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
     }
-    
     .bg-light-primary {
-        background-color: rgba(13, 110, 253, 0.1);
-    }
-    
-    .initials {
-        font-weight: 500;
-        color: #0d6efd;
-        font-size: 0.8rem;
-    }
-    
-    /* Table Styling */
-    .table {
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-    
-    .table thead th {
-        border: none;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-size: 0.75rem;
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-    }
-    
-    .table tbody tr {
-        transition: all 0.2s ease;
-    }
-    
-    .table tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-    
-    /* Badge Styling */
-    .badge {
-        font-weight: 500;
-        padding: 0.35em 0.65em;
-        font-size: 0.75em;
-    }
-    
-    .badge-light {
-        background-color: #f8f9fa;
-        color: #6c757d;
-    }
-    
-    /* Button Styling */
-    .btn-outline-primary, 
-    .btn-outline-warning, 
-    .btn-outline-danger {
-        border-width: 1px;
-    }
-    
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-    }
-    
-    /* Pagination Styling */
-    .pagination .page-link {
-        border: none;
-        color: #6c757d;
-        margin: 0 2px;
-        border-radius: 6px !important;
-    }
-    
-    .pagination .page-item.active .page-link {
-        background-color: #0d6efd;
-        color: white;
-    }
-    
-    .pagination .page-link:hover {
-        background-color: #f8f9fa;
-        color: #0d6efd;
-    }
-    
-    /* Filter Bar */
-    .shadow-sm {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        background-color: #e3f2fd !important;
+        color: #1976d2;
     }
 </style>
+@endpush
 
 @push('scripts')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Select2 (check if jQuery is available)
+    if (typeof $ !== 'undefined') {
         $('.select2').select2({
             theme: 'bootstrap4',
             placeholder: "Select option",
             allowClear: true,
             width: 'style'
         });
-        
-        $('[title]').tooltip();
+    }
+
+    // Handle delete button clicks
+    const deleteButtons = document.querySelectorAll('.delete-user-btn');
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteForm = document.getElementById('deleteForm');
+    const userNameSpan = document.getElementById('userNameToDelete');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            const deleteUrl = this.getAttribute('data-delete-url');
+
+            // Set the form action
+            deleteForm.action = deleteUrl;
+            
+            // Set the user name in the modal
+            userNameSpan.textContent = userName;
+
+            // Show the modal
+            const modal = new bootstrap.Modal(deleteModal);
+            modal.show();
+        });
     });
+
+    // Handle form submission with loading state
+    deleteForm.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...';
+    });
+});
 </script>
 @endpush
-@endsection

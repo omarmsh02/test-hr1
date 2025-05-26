@@ -35,10 +35,25 @@ class DashboardController extends Controller
      */
     public function managerDashboard()
     {
-        $departmentUsers = User::where('department', auth()->user()->department)
-            ->where('id', '!=', auth()->id())
+        // Get the authenticated manager
+        $manager = auth()->user();
+        
+        // Ensure the manager has a department
+        if (!$manager->department_id) {
+            return view('manager.dashboard', [
+                'error' => 'You are not assigned to any department'
+            ]);
+        }
+
+        // Get department employees (excluding self)
+        $departmentUsers = User::where('department_id', $manager->department_id)
+            ->where('id', '!=', $manager->id)
+            ->with(['attendances' => function($query) {
+                $query->whereDate('attendance_date', today());
+            }])
             ->get();
-            
+
+        // Calculate stats
         $stats = [
             'department_employees' => $departmentUsers->where('role', 'employee')->count(),
             'pending_leaves' => Leave::whereIn('user_id', $departmentUsers->pluck('id'))
@@ -46,16 +61,23 @@ class DashboardController extends Controller
                 ->count(),
             'today_attendance' => Attendance::whereIn('user_id', $departmentUsers->pluck('id'))
                 ->whereDate('attendance_date', today())
+                ->whereIn('status', ['present', 'late'])
                 ->count(),
         ];
-        
+
+        // Get recent leave requests
         $recentLeaves = Leave::whereIn('user_id', $departmentUsers->pluck('id'))
             ->with('user')
             ->latest()
             ->take(5)
             ->get();
-            
-        return view('manager.dashboard', compact('stats', 'recentLeaves', 'departmentUsers'));
+
+        return view('manager.dashboard', [
+            'stats' => $stats,
+            'departmentUsers' => $departmentUsers,
+            'recentLeaves' => $recentLeaves,
+            'department' => $manager->department
+        ]);
     }
 
     /**

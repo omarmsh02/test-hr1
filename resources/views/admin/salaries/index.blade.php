@@ -10,19 +10,20 @@
             <a href="{{ route('admin.salaries.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Salary
             </a>
-            <a href="{{ route('admin.salaries.generate-payslips') }}" class="btn btn-success ml-2">
-                <i class="fas fa-file-invoice-dollar"></i> Generate Payslips
-            </a>
         </div>
     </div>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Employee Salary Information</h6>
+            <small class="text-muted">
+                Showing {{ $employees->firstItem() ?? 0 }} to {{ $employees->lastItem() ?? 0 }} 
+                of {{ $employees->total() }} employees
+            </small>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="salaryTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Employee ID</th>
@@ -73,21 +74,88 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center">No employee salary records found</td>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No employee salary records found</h5>
+                                        <p class="text-muted mb-0">Start by adding salary information for your employees.</p>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+            
+            @if($employees->hasPages())
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div>
+                    <small class="text-muted">
+                        Showing {{ $employees->firstItem() }} to {{ $employees->lastItem() }} 
+                        of {{ $employees->total() }} entries
+                    </small>
+                </div>
+                <div>
+                    {{ $employees->links('pagination::bootstrap-4') }}
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>
+
+<style>
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.page-link:hover {
+    color: #495057;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-group .btn {
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+</style>
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#salaryTable').DataTable();
+        // Remove DataTable initialization since we're using Laravel pagination
+        // $('#salaryTable').DataTable();
     });
 </script>
 @endsection

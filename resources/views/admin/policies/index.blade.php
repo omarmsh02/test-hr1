@@ -17,6 +17,14 @@
     @endif
 
     <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Policies List</h5>
+            <small class="text-muted">
+                Showing {{ $policies->firstItem() ?? 0 }} to {{ $policies->lastItem() ?? 0 }} 
+                of {{ $policies->total() }} results
+            </small>
+        </div>
+        
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -29,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($policies as $policy)
+                        @forelse($policies as $policy)
                         <tr>
                             <td class="ps-4 align-middle">
                                 <div class="d-flex align-items-center">
@@ -72,11 +80,39 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No policies found</h5>
+                                    <p class="text-muted mb-0">Create your first policy to get started.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
+        
+        @if($policies->hasPages())
+        <div class="card-footer">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        Showing {{ $policies->firstItem() }} to {{ $policies->lastItem() }} 
+                        of {{ $policies->total() }} entries
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-end">
+                        {{ $policies->links('pagination::bootstrap-4') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 
@@ -159,6 +195,37 @@
     .badge-optional {
         background-color: #ffc107 !important;
         color: white;
+    }
+    
+    /* Pagination Styles */
+    .pagination {
+        margin: 0;
+    }
+
+    .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
+
+    .page-link:hover {
+        color: #495057;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
     }
 </style>
 

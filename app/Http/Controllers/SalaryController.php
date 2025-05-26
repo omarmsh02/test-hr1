@@ -16,7 +16,7 @@ class SalaryController extends Controller
         $employees = User::where('role', 'employee')
             ->orWhere('role', 'manager')
             ->with('currentSalary')
-            ->get();
+            ->paginate(5);
 
         return view('admin.salaries.index', compact('employees'));
     }
@@ -108,7 +108,7 @@ class SalaryController extends Controller
         $user = auth()->user();
         $salaries = Salary::where('user_id', $user->id)
             ->orderBy('effective_date', 'desc')
-            ->get();
+            ->paginate(5);
 
         $currentSalary = $user->currentSalary;
 
@@ -123,11 +123,11 @@ class SalaryController extends Controller
         $month = $request->month ?? now()->month;
         $year = $request->year ?? now()->year;
 
-        // Logic to generate payslips
+        // Logic to generate payslips with pagination
         $employees = User::where('role', 'employee')
             ->orWhere('role', 'manager')
             ->with('currentSalary')
-            ->get();
+            ->paginate(5);
 
         $payslips = [];
         foreach ($employees as $employee) {
@@ -143,7 +143,7 @@ class SalaryController extends Controller
             }
         }
 
-        return view('admin.salaries.payslips', compact('payslips', 'month', 'year'));
+        return view('admin.salaries.payslips', compact('employees', 'payslips', 'month', 'year'));
     }
 
     /**

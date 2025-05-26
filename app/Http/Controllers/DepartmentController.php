@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 class DepartmentController extends Controller
 {
     /**
@@ -10,9 +12,12 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::with('manager')->get();
+        $departments = Department::with('manager')
+            ->withCount('users') // Add user count for the template
+            ->paginate(5);
         return view('admin.departments.index', compact('departments'));
     }
+    
     /**
      * Show the form for creating a new department
      */
@@ -21,6 +26,7 @@ class DepartmentController extends Controller
         $managers = User::where('role', 'manager')->get();
         return view('admin.departments.create', compact('managers'));
     }
+    
     /**
      * Store a newly created department
      */
@@ -45,7 +51,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        $department->load('manager');
+        $department->load('manager', 'users');
         return view('admin.departments.show', compact('department'));
     }
     
@@ -82,9 +88,36 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        $department->delete();
+        // Add comprehensive logging
+        Log::info('Delete request received for department:', [
+            'id' => $department->id,
+            'name' => $department->name,
+            'method' => request()->method(),
+            'url' => request()->fullUrl()
+        ]);
 
-        return redirect()->route('admin.departments.index')
-        ->with('success', 'Department deleted successfully.');
+        try {
+            // Check if department has users (optional safety check)
+            $userCount = $department->users()->count();
+            Log::info('Department user count: ' . $userCount);
+
+            // Perform deletion
+            $department->delete();
+            
+            Log::info('Department deleted successfully: ' . $department->id);
+            
+            return redirect()->route('admin.departments.index')
+                ->with('success', 'Department "' . $department->name . '" deleted successfully.');
+                
+        } catch (\Exception $e) {
+            Log::error('Department deletion failed:', [
+                'department_id' => $department->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->route('admin.departments.index')
+                ->with('error', 'Failed to delete department: ' . $e->getMessage());
+        }
     }
 }

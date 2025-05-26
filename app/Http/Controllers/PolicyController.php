@@ -12,8 +12,13 @@ class PolicyController extends Controller
      */
     public function index()
     {
-        $policies = Policy::latest()->get();
-        return view('admin.policies.index', compact('policies'));
+        $policies = Policy::latest()->paginate(5);
+        
+        if (auth()->user()->role === 'admin') {
+            return view('admin.policies.index', compact('policies'));
+        } else {
+            return view('employee.policies.index', compact('policies'));
+        }
     }
 
     /**
@@ -125,7 +130,10 @@ class PolicyController extends Controller
             $query->where('category', $category);
         }
         
-        $policies = $query->get();
+        $policies = $query->paginate(5);
+        
+        // Append query parameters to pagination links
+        $policies->appends($request->query());
         
         $categories = Policy::where('is_active', true)
             ->select('category')

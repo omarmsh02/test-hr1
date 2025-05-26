@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layout.app')
 
 @section('title', 'Edit Salary Record')
 

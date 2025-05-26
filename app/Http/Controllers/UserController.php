@@ -15,14 +15,14 @@ class UserController extends Controller
     public function index()
     {
         $users = User::query()
-        ->when(request('department'), function ($query) {
-            $query->where('department_id', request('department'));
-        })
-        ->when(request('role'), function ($query) {
-            $query->where('role', request('role'));
-        })
-        ->with('department')
-        ->paginate(10);
+            ->when(request('department'), function ($query) {
+                $query->where('department_id', request('department'));
+            })
+            ->when(request('role'), function ($query) {
+                $query->where('role', request('role'));
+            })
+            ->with('department')
+            ->paginate(5);
 
         $departments = Department::all();
 

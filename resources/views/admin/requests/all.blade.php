@@ -98,7 +98,7 @@
                                         {{ ucfirst($request->status) }}
                                     </span>
                                 </td>
-                                <td>{{ $request->created_at->format('M d, Y H:i') }}</td>
+                                <td>{{ $request->created_at }}</td>
                                 <td>
                                     <a href="{{ route('admin.requests.show', $request) }}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-eye"></i> View
