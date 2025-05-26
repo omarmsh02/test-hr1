@@ -131,8 +131,6 @@ class PolicyController extends Controller
         }
         
         $policies = $query->paginate(5);
-        
-        // Append query parameters to pagination links
         $policies->appends($request->query());
         
         $categories = Policy::where('is_active', true)
@@ -141,5 +139,29 @@ class PolicyController extends Controller
             ->pluck('category');
             
         return view('employee.policies.index', compact('policies', 'categories', 'category'));
+    }
+
+    /**
+     * Display manager policies index
+     */
+    public function managerIndex(Request $request)
+    {
+        $category = $request->category ?? 'all';
+        
+        $query = Policy::where('is_active', true);
+        
+        if ($category !== 'all') {
+            $query->where('category', $category);
+        }
+        
+        $policies = $query->latest()->paginate(5);
+        $policies->appends($request->query());
+        
+        $categories = Policy::where('is_active', true)
+            ->select('category')
+            ->distinct()
+            ->pluck('category');
+            
+        return view('manager.policies.index', compact('policies', 'categories', 'category'));
     }
 }

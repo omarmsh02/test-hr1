@@ -198,11 +198,11 @@
                                                 <span class="badge badge-{{ 
                                                     $attendance->status == 'present' ? 'success' : 
                                                     ($attendance->status == 'late' ? 'warning' : 'info') 
-                                                }}">
+                                                }} text-dark">
                                                     {{ ucfirst($attendance->status) }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-danger">Absent</span>
+                                                <span class="badge badge-danger text-dark">Absent</span>
                                             @endif
                                         </td>
                                     </tr>

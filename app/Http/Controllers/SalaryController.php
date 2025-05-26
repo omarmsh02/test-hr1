@@ -116,48 +116,16 @@ class SalaryController extends Controller
     }
 
     /**
-     * Generate payslips
+     * Display manager salary overview
      */
-    public function generatePayslips(Request $request)
+    public function managerIndex()
     {
-        $month = $request->month ?? now()->month;
-        $year = $request->year ?? now()->year;
-
-        // Logic to generate payslips with pagination
-        $employees = User::where('role', 'employee')
-            ->orWhere('role', 'manager')
-            ->with('currentSalary')
+        $user = auth()->user();
+        $currentSalary = $user->currentSalary;
+        $salaries = Salary::where('user_id', $user->id)
+            ->orderBy('effective_date', 'desc')
             ->paginate(5);
-
-        $payslips = [];
-        foreach ($employees as $employee) {
-            $currentSalary = $employee->currentSalary;
-            if ($currentSalary) {
-                $payslips[] = [
-                    'employee_name' => $employee->name,
-                    'amount' => $currentSalary->amount,
-                    'currency' => $currentSalary->currency,
-                    'month' => $month,
-                    'year' => $year,
-                ];
-            }
-        }
-
-        return view('admin.salaries.payslips', compact('employees', 'payslips', 'month', 'year'));
-    }
-
-    /**
-     * Display individual payslip
-     */
-    public function showPayslip($id)
-    {
-        // Logic to fetch and display an individual payslip
-        $payslip = Salary::find($id);
-
-        if (!$payslip) {
-            abort(404);
-        }
-
-        return view('admin.salaries.payslip', compact('payslip'));
+            
+        return view('manager.salary.index', compact('currentSalary', 'salaries'));
     }
 }

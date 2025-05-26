@@ -53,14 +53,6 @@
                             <span class="fs-6">Holidays</span>
                         </a>
                     </li>
-                    {{-- <li class="nav-item mb-1">
-                        <a class="nav-link d-flex align-items-center py-2 px-3 rounded-3" href="{{ route('admin.leaves.index') }}">
-                            <div class="icon-container me-3">
-                                <i class="fas fa-plane-departure"></i>
-                            </div>
-                            <span class="fs-6">Leaves</span>
-                        </a>
-                    </li> --}}
                     <li class="nav-item mb-1">
                         <a class="nav-link d-flex align-items-center py-2 px-3 rounded-3" href="{{ route('admin.policies.index') }}">
                             <div class="icon-container me-3">
@@ -169,6 +161,26 @@
                                 <i class="fas fa-clipboard-list"></i>
                             </div>
                             <span class="fs-6">Team Requests</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section mt-3 mb-1">
+                        <span class="nav-section-title">My Workspace</span>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link d-flex align-items-center py-2 px-3 rounded-3" href="{{ route('manager.policies.index') }}">
+                            <div class="icon-container me-3">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <span class="fs-6">Policies</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link d-flex align-items-center py-2 px-3 rounded-3" href="{{ route('manager.salary.index') }}">
+                            <div class="icon-container me-3">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <span class="fs-6">Salary</span>
                         </a>
                     </li>
                 @endif
@@ -412,6 +424,4 @@
         right: -2px;
         animation: pulse 2s infinite;
     }
-
-
 </style>

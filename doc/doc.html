@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkWise - HR Management System</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .page-break { page-break-before: always; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2563eb;
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        
+        h2 {
+            color: #2563eb;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2563eb;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #1e3a8a;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .tech-stack {
+            background: #f8fafc;
+            padding: 20px;
+            border-left: 4px solid #10b981;
+            margin: 20px 0;
+        }
+        
+        .role-box {
+            background: #fef7ed;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .role-box h3 {
+            color: #f59e0b;
+            margin-top: 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #6366f1;
+        }
+        
+        .feature-card h4 {
+            color: #6366f1;
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 5px;
+        }
+        
+        .business-model {
+            background: #ecfdf5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .roadmap {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .roadmap ul li {
+            background: white;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .conclusion {
+            background: #1e293b;
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .demo-accounts {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            border: 2px dashed #f59e0b;
+        }
+        
+        .page-break {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>WorkWise</h1>
+        <div class="subtitle">HR Management System</div>
+    </div>
+    
+    <h2>Executive Summary</h2>
+    <p>WorkWise is a robust web-based Human Resources Management System (HRMS) designed to centralize and automate HR processes in small to mid-sized companies. Developed using Laravel, Blade templates, HTML/CSS, and MySQL, WorkWise enables HR personnel, managers, and employees to interact efficiently across departments. The platform reduces administrative overhead and enhances transparency and accountability.</p>
+    
+    <div class="tech-stack">
+        <h2 style="margin-top: 0; border: none; padding: 0; color: #10b981;">Technology Stack</h2>
+        <ul>
+            <li><strong>Backend Framework:</strong> Laravel (PHP)</li>
+            <li><strong>Frontend:</strong> Blade templating engine, HTML, CSS, JavaScript</li>
+            <li><strong>Database:</strong> MySQL</li>
+            <li><strong>Authentication:</strong> Laravel's native authentication with middleware-based role access</li>
+            <li><strong>Access Control:</strong> Role-based middleware (AdminMiddleware, ManagerMiddleware, EmployeeMiddleware)</li>
+        </ul>
+    </div>
+    
+    <h2>Role-Based Architecture</h2>
+    <p>Users access the system from a unified login interface. After login, Laravel middleware identifies the user's role and redirects them to the correct dashboard:</p>
+    
+    <div class="role-box">
+        <h3>🔧 Admin Dashboard</h3>
+        <p><strong>Full system control:</strong></p>
+        <ul>
+            <li>User Management: Create, update, and delete users</li>
+            <li>Department Management: Define organizational units</li>
+            <li>Holiday Calendar: Set official holidays</li>
+            <li>Policy Management: Add, update, and remove workplace policies</li>
+            <li>Request Management: Monitor all requests</li>
+            <li>Salary Allocation: Assign and manage monthly salaries</li>
+        </ul>
+        <img src="img/admin_dashboard.png" alt="Admin Dashboard" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Dashboard Overview</p>
+        <img src="img/admin_users.png" alt="Admin Users Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Users Management Section</p>
+        <img src="img/admin_departments.png" alt="Admin Departments Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Departments Management Section</p>
+        <img src="img/admin_holidays.png" alt="Admin Holidays Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Holidays Management Section</p>
+        <img src="img/admin_policies.png" alt="Admin Policies Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Policies Management Section</p>
+        <img src="img/admin_requests.png" alt="Admin Requests Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Requests Management Section</p>
+        <img src="img/admin_salaries.png" alt="Admin Salaries Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Admin Salaries Management Section</p>
+    </div>
+    
+    <div class="role-box">
+        <h3>📊 Manager Dashboard</h3>
+        <p><strong>Team supervision and oversight:</strong></p>
+        <ul>
+            <li>Attendance Oversight: View team attendance records</li>
+            <li>Team Request Review: Approve/reject team requests</li>
+            <li>Leave Management: Process leave applications</li>
+        </ul>
+        <img src="img/manager_dashboard.png" alt="Manager Dashboard" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Manager Dashboard Overview</p>
+        <img src="img/manager_team_attendance.png" alt="Manager Team Attendance" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Manager Team Attendance Section</p>
+        <img src="img/manager_team_leaves.png" alt="Manager Team Leaves" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Manager Team Leaves Section</p>
+        <img src="img/manager_team_requests.png" alt="Manager Team Requests" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Manager Team Requests Section</p>
+    </div>
+    
+    <div class="role-box">
+        <h3>🧑‍💼 Employee Dashboard</h3>
+        <p><strong>Daily HR operations:</strong></p>
+        <ul>
+            <li>Check-In / Check-Out: Record attendance</li>
+            <li>Attendance Logs: View historical data</li>
+            <li>Leave Requests: Submit and track status</li>
+            <li>General Requests: Submit hardware/software requests</li>
+            <li>Salary Details: View personal salary information</li>
+            <li>Policies: Read company policies</li>
+            <li>Holidays: Access holiday calendar</li>
+        </ul>
+        <img src="img/employee_dashboard.png" alt="Employee Dashboard" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Dashboard Overview</p>
+        <img src="img/employee_attendance.png" alt="Employee Attendance" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Attendance Section</p>
+        <img src="img/employee_holidays.png" alt="Employee Holidays" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Holidays Section</p>
+        <img src="img/employee_leaves.png" alt="Employee Leaves" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Leaves Section</p>
+        <img src="img/employee_policies.png" alt="Employee Policies" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Policies Section</p>
+        <img src="img/employee_requests.png" alt="Employee Requests" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Requests Section</p>
+        <img src="img/employee_salary.png" alt="Employee Salary" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Employee Salary Section</p>
+    </div>
+    
+    <div class="page-break">
+        <h2>System Features</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h4>Attendance System</h4>
+                <ul>
+                    <li>Manual check-in/check-out buttons</li>
+                    <li>Timestamp storage and punctuality calculation</li>
+                    <li>Real-time attendance logs for managers</li>
+                </ul>
+                <img src="img/checkin_checkout.png" alt="Check-In/Check-Out Buttons" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                <p class="caption">Check-In/Check-Out Buttons</p>
+                <img src="img/attendance_table.png" alt="Real-Time Attendance Table" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                <p class="caption">Real-Time Attendance Table</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>Request Management</h4>
+                <ul>
+                    <li>Leave requests with types, duration, reasons</li>
+                    <li>Status tracking: Pending, Approved, Rejected</li>
+                    <li>General requests for software/hardware needs</li>
+                </ul>
+                <img src="img/request_management.png" alt="Request Management" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                <p class="caption">Request Management Overview</p>
+                <img src="img/request_form.png" alt="Leave Request Form" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                <p class="caption">Leave Request Form</p>
+            </div>
+            
+            <div class="feature-card">
+                <h4>UI/UX Design</h4>
+                <ul>
+                    <li>Clean interface using Blade and Bootstrap</li>
+                    <li>Single-language support: English</li>
+                    <li>Role-specific dashboard layouts</li>
+                </ul>
+                <img src="img/login_page.png" alt="Login Page" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                <p class="caption">Login Page</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-accounts">
+        <h3>Demo Accounts Available</h3>
+        <p>Multiple predefined demo accounts for testing different user roles and dashboard functionalities</p>
+        <img src="img/demo_accounts.png" alt="Demo Accounts" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Demo Accounts Overview</p>
+    </div>
+    
+    <div class="business-model">
+        <h2 style="margin-top: 0; color: #10b981;">Business Model</h2>
+        
+        <h3>Target Market</h3>
+        <ul>
+            <li>SMEs (Small & Medium Enterprises)</li>
+            <li>Startups and local businesses seeking affordable HR automation</li>
+        </ul>
+        
+        <h3>Revenue Streams</h3>
+        <ul>
+            <li><strong>SaaS Licensing:</strong> Monthly or yearly subscriptions</li>
+            <li><strong>White Labeling:</strong> Rebranding for other companies</li>
+            <li><strong>Custom Development:</strong> Paid add-ons or integrations</li>
+        </ul>
+        
+        <h3>Key Value Propositions</h3>
+        <ul>
+            <li>Affordable and intuitive HR solution</li>
+            <li>Fast deployment and configuration</li>
+            <li>Role-specific data segregation</li>
+        </ul>
+    </div>
+    
+    <div class="roadmap">
+        <h2 style="margin-top: 0; color: #3b82f6;">Future Development Roadmap</h2>
+        <ul>
+            <li>🌐 Multi-language support</li>
+            <li>📱 Responsive design / mobile app</li>
+            <li>🔔 Real-time notifications for approvals and messages</li>
+            <li>📊 Reporting and Analytics Module (PDF/Excel reports)</li>
+            <li>🔐 Two-Factor Authentication</li>
+        </ul>
+    </div>
+    
+    <div class="conclusion">
+        <h2 style="color: white; margin-top: 0;">Conclusion</h2>
+        <p>WorkWise is a scalable and secure HRMS platform tailored to organizations aiming to simplify and digitize their human resources workflows. Its modular design, role-based access control, and professional UI make it a compelling solution for businesses looking to optimize HR operations efficiently and affordably.</p>
+        <img src="img/erdigram.png" alt="ER Diagram" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+        <p class="caption">Entity-Relationship Diagram (ERD) of WorkWise</p>
+    </div>
+</body>
+</html>

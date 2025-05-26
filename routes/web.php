@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HolidayController;
@@ -153,6 +152,12 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/requests', [RequestController::class, 'managerIndex'])->name('manager.requests.index');
     Route::get('/requests/{request}', [RequestController::class, 'show'])->name('manager.requests.show');
     Route::put('/requests/{request}/status', [RequestController::class, 'updateStatus'])->name('manager.requests.updateStatus');
+
+    // Policies
+    Route::get('/policies', [PolicyController::class, 'managerIndex'])->name('manager.policies.index');
+
+    // Salary
+    Route::get('/salary', [SalaryController::class, 'managerIndex'])->name('manager.salary.index');
 });
 
 // Employee Routes
@@ -192,11 +197,4 @@ Route::prefix('employee')->middleware(['auth', 'role:employee'])->group(function
 
     // Policies
     Route::get('/policies', [PolicyController::class, 'employeeIndex'])->name('employee.policies.index');
-});
-
-// Chat Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');
-    Route::get('/chats/{user}', [ChatController::class, 'show'])->name('chats.show');
-    Route::post('/chats/{user}', [ChatController::class, 'store'])->name('chats.store');
 });
